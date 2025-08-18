@@ -2,6 +2,7 @@
 from nicegui import ui
 import numpy as np
 import plotly.express as px
+import math
 
 def make_city_fig(num_buildings: int, min_h: int, max_h: int,
                   min_w: int, max_w: int, gap: int = 1):
@@ -19,9 +20,12 @@ def make_city_fig(num_buildings: int, min_h: int, max_h: int,
     # Canvas: height = tallest possible, width = sum of widths + gaps
     H = max_h
     W = int(sum(widths) + gap * (num_buildings - 1))
-    canvas = np.ones((H, W), dtype=np.uint8)  # white background
+    canvas_height = round(max(50, H, W/2))
+    canvas_width = max(100, H*2, W)
+    canvas = np.ones((canvas_height, canvas_width), dtype=np.uint8)  # white background
 
-    x = 0
+    x = max(0, math.floor(canvas.shape[1]/2 - sum(widths+1)/2))
+    print(x)
     for w, h in zip(widths, heights):
         # Paint the building as black (0)
         if h > 0 and w > 0:
@@ -35,7 +39,7 @@ def make_city_fig(num_buildings: int, min_h: int, max_h: int,
             y_offsets = range(1, h-1, 2)            # 1,3,5,... < h
             for xo in x_offsets:
                 for yo in y_offsets:
-                    canvas[yo, x + xo] = 1  # carve a white pixel window
+                    canvas[yo, x + xo] = 2  # carve a white pixel window
 
         x += w + gap  # move to next building start (with gap)
 
@@ -43,8 +47,8 @@ def make_city_fig(num_buildings: int, min_h: int, max_h: int,
         canvas,
         origin='lower',
         aspect='equal',
-        zmin=0, zmax=1,
-        color_continuous_scale=[[0, 'black'], [1, 'white']],
+        zmin=0, zmax=2,
+        color_continuous_scale=[[0, 'black'], [0.5, '#56A2FF'], [1, "white"]],
     )
     fig.update_layout(
         margin=dict(l=0, r=0, t=40, b=0),
