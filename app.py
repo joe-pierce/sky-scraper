@@ -23,6 +23,18 @@ def make_city_fig(num_buildings: int, min_h: int, max_h: int,
     canvas_height = round(max(50, H, W/2))
     canvas_width = max(100, H*2, W)
     canvas = np.ones((canvas_height, canvas_width), dtype=np.uint8)  # white background
+    sun = np.array([
+        [2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ],
+        [2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ],
+        [2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ],
+        [2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ],
+        [1 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ],
+        [1 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ],
+        [1 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ],
+        [1 ,1 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ],
+        [1 ,1 ,1 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ],
+        [1 ,1 ,1 ,1 ,1 ,1 ,2 ,2 ,2 ,2 ],])
+    canvas[-11:-1, -11:-1] = sun
 
     x = max(0, math.floor(canvas.shape[1]/2 - sum(widths+1)/2))
     print(x)
@@ -39,7 +51,7 @@ def make_city_fig(num_buildings: int, min_h: int, max_h: int,
             y_offsets = range(1, h-1, 2)            # 1,3,5,... < h
             for xo in x_offsets:
                 for yo in y_offsets:
-                    canvas[yo, x + xo] = 2  # carve a white pixel window
+                    canvas[yo, x + xo] = 10  # carve a white pixel window
 
         x += w + gap  # move to next building start (with gap)
 
@@ -47,8 +59,8 @@ def make_city_fig(num_buildings: int, min_h: int, max_h: int,
         canvas,
         origin='lower',
         aspect='equal',
-        zmin=0, zmax=2,
-        color_continuous_scale=[[0, 'black'], [0.5, '#56A2FF'], [1, "white"]],
+        zmin=0, zmax=10,
+        color_continuous_scale=[[0, 'black'], [0.1, '#56A2FF'], [.2, "yellow"], [1, "white"]],
     )
     fig.update_layout(
         margin=dict(l=0, r=0, t=40, b=0),
@@ -60,13 +72,15 @@ def make_city_fig(num_buildings: int, min_h: int, max_h: int,
     return fig
 
 
-with ui.card().classes('w-full max-w-4xl mx-auto'):
+with ui.card().classes('w-full mx-auto'):
     ui.label('Building Row with Random Widths + Windows').classes('text-xl font-medium')
 
     with ui.row().classes('items-end gap-4'):
         num_buildings = ui.number('num_buildings', value=10, min=1, step=1, format='%d')
+    with ui.row().classes('items-end gap-4'):
         min_height = ui.number('min_height', value=5, min=0, step=1, format='%d')
         max_height = ui.number('max_height', value=20, min=0, step=1, format='%d')
+    with ui.row().classes('items-end gap-4'):
         min_width = ui.number('min_width', value=3, min=1, step=1, format='%d')
         max_width = ui.number('max_width', value=7, min=1, step=1, format='%d')
 
