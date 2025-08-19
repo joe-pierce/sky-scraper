@@ -8,4 +8,5 @@ dependencies = [
     "nicegui>=2.22.2",
     "numpy>=2.3.2",
     "plotly>=6.3.0",
+    "ruff>=0.12.9",
 ]
