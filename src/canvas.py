@@ -113,7 +113,6 @@ def sprinkle_stars(
 
 def add_clouds(
     canvas: np.ndarray,
-    sky_code: int,
     cloud_code: int,
     n_clouds: int = 6,
     rng: np.random.Generator | None = None,
@@ -163,7 +162,7 @@ def add_clouds(
         mask[0:base_y, :] = False
 
         # paint onto canvas only where it's sky
-        canvas[mask & (canvas == sky_code)] = cloud_code
+        canvas[mask & ((canvas == 1)|(canvas == 2))] = cloud_code
 
 
 def make_city_fig(
@@ -227,7 +226,6 @@ def make_city_fig(
         canvas[-sun.shape[0] - 1 : -1, -sun.shape[1] - 1 : -1] = sun
         add_clouds(
             canvas,
-            sky_code=SKY,
             cloud_code=CLOUD,
             n_clouds=round(num_buildings / 4),
             rng=rng,
