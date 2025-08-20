@@ -10,3 +10,18 @@ dependencies = [
     "plotly>=6.3.0",
     "ruff>=0.12.9",
 ]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+# 1. Enable flake8-bugbear (`B`) rules, in addition to the defaults.
+select = [
+  "E",   # pycodestyle
+  "F",   # pyflakes
+  "I",   # import sorting (isort)
+  "B",   # flake8-bugbear
+  "UP",  # pyupgrade
+  "SIM", # flake8-simplify
+  "W",   # warnings
+]
