@@ -7,28 +7,55 @@ with ui.header().classes("items-center justify-between px-4"):
     ui.label("Skyline Generator").classes("text-xl panel-title")
 
 with ui.splitter(value=35, limits=(30, 85)).classes("w-full h-screen") as split:
-    # LEFT: controls
     with split.before, ui.element("div").classes("h-full w-full flex flex-col py-5 min-w-[300px]"):
-        with ui.row().classes("items-center gap-4 p-2"):
-            num_buildings_lbl = ui.label("Number of buildings: 10")
-            num_buildings = ui.slider(
-                min=1,
-                max=100,
-                value=10,
-                on_change=lambda e: num_buildings_lbl.set_text(f"Number of buildings: {e.value}"),
-            ).props("label").classes('flex-1')
+        ui.label("Number of buildings").style("font-size: 1.2em; font-weight: 500").classes(
+            "px-2 pt-2"
+        )
+        with ui.row().classes("items-center gap-4 p-2 pt-1"):
+            num_buildings_lbl = ui.label("10")
+            num_buildings = (
+                ui.slider(
+                    min=1,
+                    max=100,
+                    value=10,
+                    on_change=lambda e: num_buildings_lbl.set_text(f"{e.value}"),
+                )
+                .props("label")
+                .classes("flex-1")
+            )
 
-        with ui.row().classes("items-end gap-4 p-2"):
-            min_max_height_lbl = ui.label("Building height: Min: 5, Max: 25")
-            min_max_height= ui.range(min=1, max=100, value={'min': 5, 'max': 25}, on_change=lambda e: min_max_height_lbl.set_text(f"Building height: Min: {e.value['min']}, Max: {e.value['max']}")).props("label").classes('flex-1')
-            # min_height = ui.number("min_height", value=5, min=0, step=1, format="%d")
-            # max_height = ui.number("max_height", value=25, min=0, step=1, format="%d")
+        ui.label("Building height").style("font-size: 1.2em; font-weight: 500").classes("px-2 pt-2")
+        with ui.row().classes("items-end gap-4 p-2 pt-1"):
+            min_max_height_lbl = ui.label("Min: 5 Max: 25")
+            min_max_height = (
+                ui.range(
+                    min=1,
+                    max=100,
+                    value={"min": 5, "max": 25},
+                    on_change=lambda e: min_max_height_lbl.set_text(
+                        f"Min: {e.value['min']} Max: {e.value['max']}"
+                    ),
+                )
+                .props("label")
+                .classes("flex-1")
+            )
 
-        with ui.row().classes("items-end gap-4 p-2"):
-            min_max_width_lbl = ui.label("Building width: Min: 5, Max: 25")
-            min_max_width= ui.range(min=1, max=50, value={'min': 3, 'max': 10}, on_change=lambda e: min_max_width_lbl.set_text(f"Building width: Min: {e.value['min']}, Max: {e.value['max']}")).props("label").classes('flex-1')
-            # min_width = ui.number("min_width", value=3, min=1, step=1, format="%d")
-            # max_width = ui.number("max_width", value=10, min=1, step=1, format="%d")
+        ui.label("Building width").style("font-size: 1.2em; font-weight: 500").classes("px-2 pt-2")
+
+        with ui.row().classes("items-end gap-4 p-2 pt-1"):
+            min_max_width_lbl = ui.label("Min: 5 Max: 25")
+            min_max_width = (
+                ui.range(
+                    min=1,
+                    max=50,
+                    value={"min": 3, "max": 10},
+                    on_change=lambda e: min_max_width_lbl.set_text(
+                        f"Min: {e.value['min']} Max: {e.value['max']}"
+                    ),
+                )
+                .props("label")
+                .classes("flex-1")
+            )
 
         with ui.row().classes("items-center gap-6 mt-2 p-2"):
             night_switch = ui.switch("day/night", value=False)
@@ -36,7 +63,6 @@ with ui.splitter(value=35, limits=(30, 85)).classes("w-full h-screen") as split:
         with ui.row().classes("items-center gap-6 mt-2 p-2"):
             manual_button = ui.button("Regenerate now", color="primary")
 
-    # RIGHT: plot
     with split.after:
         plot = ui.plotly(
             make_city_fig(
@@ -50,7 +76,6 @@ with ui.splitter(value=35, limits=(30, 85)).classes("w-full h-screen") as split:
         ).classes("w-full h-screen")
 
     def regenerate(*_):
-        # clamp and auto-swap min/max pairs if needed
         mn_h, mx_h = int(min_max_height.value["min"] or 0), int(min_max_height.value["max"] or 0)
         if mn_h > mx_h:
             mn_h, mx_h = mx_h, mn_h
