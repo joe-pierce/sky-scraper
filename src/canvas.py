@@ -162,7 +162,7 @@ def add_clouds(
         mask[0:base_y, :] = False
 
         # paint onto canvas only where it's sky
-        canvas[mask & ((canvas == 1)|(canvas == 2))] = cloud_code
+        canvas[mask & ((canvas == 1) | (canvas == 2))] = cloud_code
 
 
 def make_city_fig(
