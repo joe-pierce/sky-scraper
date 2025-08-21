@@ -17,9 +17,9 @@ Created as part of the **CitDev World Skyscraper Challenge**.
 
 ## 📸 Screenshots & Demos
 
-<img src="images/daytime.png" alt="Daytime skyline" style="border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.3);" width="400">
 
-<img src="images/nighttime.png" alt="Daytime skyline" style="border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.3);" width="400">
+!["Daytime skyline"](images/daytime.png)
+!["Night time skyline"](images/nighttime.png)
 
 
 
