@@ -30,8 +30,8 @@ Created as part of the **CitDev World Skyscraper Challenge**.
 Clone the repository and run the app locally:
 
 ```bash
-git clone https://github.com/yourusername/skyscraper-generator.git
-cd skyscraper-generator
+git clone https://github.com/joe-pierce/sky-scraper.git
+cd sky-scraper
 
 # install dependencies (uses uv, but pip/venv also works)
 uv sync
