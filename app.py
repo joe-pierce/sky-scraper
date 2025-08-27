@@ -1,7 +1,13 @@
 # pip install nicegui plotly numpy
-from nicegui import ui
+import dotenv
+
+dotenv.load_dotenv()
+from nicegui import ui, run
 
 from src.canvas import make_city_fig
+from src.enhance import enhance
+
+rgb_dict = {"latest": None}
 
 with ui.header().classes("items-center justify-between px-4"):
     ui.label("Skyline Generator").classes("text-xl panel-title")
@@ -62,18 +68,48 @@ with ui.splitter(value=35, limits=(30, 85)).classes("w-full h-screen") as split:
             auto_switch = ui.switch("auto-regenerate", value=True)
         with ui.row().classes("items-center gap-6 mt-2 p-2"):
             manual_button = ui.button("Regenerate now", color="primary")
+        with ui.row().classes("items-center gap-6 mt-2 p-2"):
+            enhance_btn = ui.button("Enhance", color="secondary")
+
+            # def on_enhance_click():
+            #     try:
+            #         if rgb_dict["latest"] is None:
+            #             ui.notify("Generate a skyline first")
+            #             return
+            #         # Choose backend:
+            #         plot.figure = enhance(rgb_dict["latest"])  # local
+
+            #         plot.update()
+            #     except Exception as e:
+            #         ui.notify(f"Enhance failed: {e}", color="negative")
+
+            async def on_enhance_click():
+                try:
+                    if rgb_dict["latest"] is None:
+                        ui.notify("Generate a skyline first")
+                        return
+                    ui.notify("Enhancing…", type="info")
+                    # run in a worker thread (non-blocking)
+                    fig = await run.io_bound(enhance, rgb_dict["latest"])
+                    plot.figure = fig
+                    plot.update()
+                    ui.notify("Done!", type="positive")
+                except Exception as e:
+                    ui.notify(f"Enhance failed: {e}", color="negative")
+
+            enhance_btn.on_click(on_enhance_click)
 
     with split.after:
-        plot = ui.plotly(
-            make_city_fig(
-                num_buildings.value,
-                min_max_height.value["min"],
-                min_max_height.value["max"],
-                min_max_width.value["min"],
-                min_max_width.value["max"],
-                night_switch.value,
-            )
-        ).classes("w-full h-screen")
+        plot, rgb = make_city_fig(
+            num_buildings.value,
+            min_max_height.value["min"],
+            min_max_height.value["max"],
+            min_max_width.value["min"],
+            min_max_width.value["max"],
+            night_switch.value,
+        )
+        plot = ui.plotly(plot).classes("w-full h-screen")
+        rgb_dict["latest"] = rgb
 
     def regenerate(*_):
         mn_h, mx_h = int(min_max_height.value["min"] or 0), int(min_max_height.value["max"] or 0)
@@ -86,7 +122,10 @@ with ui.splitter(value=35, limits=(30, 85)).classes("w-full h-screen") as split:
             mn_w, mx_w = mx_w, mn_w
             min_max_width.value["min"], min_max_width.value["max"] = mn_w, mx_w
 
-        plot.figure = make_city_fig(num_buildings.value, mn_h, mx_h, mn_w, mx_w, night_switch.value)
+        plot.figure, rgb = make_city_fig(
+            num_buildings.value, mn_h, mx_h, mn_w, mx_w, night_switch.value
+        )
+        rgb_dict["latest"] = rgb
         plot.update()
 
     def maybe_regenerate(*_):

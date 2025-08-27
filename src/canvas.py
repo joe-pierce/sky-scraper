@@ -281,4 +281,4 @@ def make_city_fig(
         yaxis_visible=False,
         autosize=True,
     )
-    return fig
+    return fig, rgb
